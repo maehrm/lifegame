@@ -1,1 +1,75 @@
-hello lifegame
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <title>Life Game</title>
+    <script src="processing.min.js"></script>
+    <script type="text/processing" data-processing-target="processing-canvas">
+      int N = 100;
+      int[] m = new int[N * N];
+      int[] temp = new int[N * N];
+      int w, h;
+
+      void setup(){
+          size(400, 400);
+          w = width / N;
+          h = height / N;
+          frameRate(15);
+          noStroke();
+          for (int i = 0; i < N * N; i++) m[i] = int(random(2));
+      }
+
+      void draw(){
+          int a, b, e, x, y, c;
+          arrayCopy(m, temp);
+          for (int i = 0; i < N * N; i++) m[i] = 0; // cler(m)
+          for (int i = 0; i < N * N; i++) {
+              if (i % N == 0) { // 最左の列
+                  a = 0;
+                  b = 1;
+              }
+              else if ((i + 1) % N == 0) { // 最右の列
+                  a = -1;
+                  b = 0;
+              }
+              else {
+                  a = -1;
+                  b = 1;
+              }
+              e = 0;
+              for (y = -1; y <= 1; y++) {
+                  for (x = a; x <= b; x++) {
+                      if ((y != 0) || (x != 0)) {
+                          c = i + y * N + x;
+                          if ((c >= 0) && (c < N * N)) {
+                              if (temp[c] == 1) {
+                                  e++;
+                              }
+                          }
+                      }
+                  }
+              }
+              // 生死を判定する
+              if ((temp[i] == 0) && (e == 3)) {
+                  m[i] = 1;
+              }
+              else if((temp[i] == 1) && ((e == 2) || (e == 3))) {
+                  m[i] = 1;
+              }
+              // 描画
+              if (m[i] == 1) {
+                  fill(0);
+              }
+              else {
+                  fill(250);
+              }
+              rect((i % N) * w, (int)(i / N) * h, w, h);   
+          }
+      }
+    </script>
+</head>
+<body>
+  <h1>ライフゲーム(Life Game)</h1>
+  <canvas id="processing-canvas"></canvas>
+</body>
+</html>
